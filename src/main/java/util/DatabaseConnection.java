@@ -73,6 +73,18 @@ public class DatabaseConnection {
                             "FOREIGN KEY (roleId) REFERENCES Role(id))"
             );
 
+            // Tabela Task
+            conn.createStatement().executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS Task (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "title TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "dueDate TEXT NOT NULL, " +
+                            "completed BOOLEAN NOT NULL DEFAULT 0, " +
+                            "projectId INTEGER NOT NULL, " +
+                            "FOREIGN KEY (projectId) REFERENCES Project(id))"
+            );
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

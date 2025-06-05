@@ -2,8 +2,10 @@ package ui;
 
 import dao.OrganizationDAO;
 import dao.ProjectDAO;
+import dao.TaskDAO;
 import model.Organization;
 import model.Project;
+import model.Task;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,12 +36,26 @@ public class ProjectUI extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Painel de botões
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5, 10, 10));
+
 
         JButton btnAdd = new JButton("Adicionar");
         JButton btnEdit = new JButton("Editar");
         JButton btnDelete = new JButton("Excluir");
         JButton btnBack = new JButton("Voltar");
+        JButton btnTasks = new JButton("Tarefas");
+
+        btnTasks.addActionListener(e -> {
+            int selectedRow = projectTable.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Selecione um projeto para gerenciar tarefas",
+                        "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int projectId = (int) projectTable.getValueAt(selectedRow, 0);
+            new ProjectTasksUI(projectId).setVisible(true);
+            dispose();
+        });
 
         btnAdd.addActionListener(e -> showAddProjectDialog());
         btnEdit.addActionListener(e -> showEditProjectDialog(projectTable));
@@ -52,7 +68,9 @@ public class ProjectUI extends JFrame {
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnEdit);
         buttonPanel.add(btnDelete);
+        buttonPanel.add(btnTasks);
         buttonPanel.add(btnBack);
+
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -60,39 +78,6 @@ public class ProjectUI extends JFrame {
         loadProjectData(projectTable);
 
         add(panel);
-    }
-
-    private void loadProjectData(JTable table) {
-        try {
-            List<Project> projects = projectDAO.getAllProjects();
-            String[] columnNames = {"ID", "Nome", "Descrição", "Data Início", "Data Término", "Organização"};
-            Object[][] data = new Object[projects.size()][6];
-
-            for (int i = 0; i < projects.size(); i++) {
-                Project project = projects.get(i);
-                data[i][0] = project.getId();
-                data[i][1] = project.getName();
-                data[i][2] = project.getDescription();
-                data[i][3] = project.getStartDate();
-                data[i][4] = project.getEndDate();
-                
-                // Se você tiver organização associada ao projeto, adicione aqui
-                // data[i][5] = organizationDAO.getOrganization(project.getOrgId()).getName();
-                data[i][5] = "N/A"; // Temporário - ajuste conforme sua lógica
-            }
-
-            table.setModel(new javax.swing.table.DefaultTableModel(
-                    data, columnNames
-            ) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            });
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar projetos: " + e.getMessage(),
-                    "Erro", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void showAddProjectDialog() {
@@ -137,7 +122,7 @@ public class ProjectUI extends JFrame {
         btnSave.addActionListener(e -> {
             try {
                 String selectedOrg = (String) cbOrganization.getSelectedItem();
-                int orgId = selectedOrg != null ? 
+                int orgId = selectedOrg != null ?
                         Integer.parseInt(selectedOrg.split(" - ")[0]) : 0;
 
                 Project project = new Project(
@@ -166,6 +151,43 @@ public class ProjectUI extends JFrame {
 
         dialog.add(panel);
         dialog.setVisible(true);
+    }
+
+    private void loadProjectData(JTable table) {
+        try {
+            List<Project> projects = projectDAO.getAllProjects();
+            TaskDAO taskDAO = new TaskDAO();
+
+            String[] columnNames = {"ID", "Nome", "Descrição", "Data Início", "Data Término", "Tarefas"};
+            Object[][] data = new Object[projects.size()][6];
+
+            for (int i = 0; i < projects.size(); i++) {
+                Project project = projects.get(i);
+                data[i][0] = project.getId();
+                data[i][1] = project.getName();
+                data[i][2] = project.getDescription();
+                data[i][3] = project.getStartDate();
+                data[i][4] = project.getEndDate();
+
+                // Contar tarefas concluídas e totais
+                List<Task> tasks = taskDAO.getTasksByProject(project.getId());
+                int totalTasks = tasks.size();
+                int completedTasks = (int) tasks.stream().filter(Task::isCompleted).count();
+                data[i][5] = completedTasks + "/" + totalTasks + " tarefas";
+            }
+
+            table.setModel(new javax.swing.table.DefaultTableModel(
+                    data, columnNames
+            ) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            });
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar projetos: " + e.getMessage(),
+                    "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void showEditProjectDialog(JTable table) {
