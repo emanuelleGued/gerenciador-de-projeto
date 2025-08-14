@@ -1,69 +1,72 @@
-# Requisitos do Sistema - Aplicação de Gerenciamento de Projetos
+# Requisitos do Sistema de Gerenciamento de Projetos
 
-## 1. Requisitos Funcionais (RF)
+## Requisitos Funcionais
 
-### 1.1 Gerenciamento de Usuários (RF-01 a RF-05)
-- **RF-01**: Cadastrar usuário (nome, e-mail, organização vinculada)
-- **RF-02**: Editar informações do usuário (atualizar nome, e-mail ou organização)
-- **RF-03**: Excluir usuário
-- **RF-04**: Listar todos os usuários cadastrados
-- **RF-05**: Visualizar detalhes de um usuário específico
+### 1. Gerenciamento de Usuários
+- **RF001**: O sistema deve permitir o cadastro de usuários com nome, e-mail e organização
+- **RF002**: O sistema deve permitir a associação de usuários a organizações
+- **RF003**: O sistema deve permitir a edição e exclusão de usuários
 
-### 1.2 Gerenciamento de Organizações (RF-06 a RF-10)
-- **RF-06**: Cadastrar organização (nome, endereço)
-- **RF-07**: Editar organização (alterar nome ou endereço)
-- **RF-08**: Excluir organização
-- **RF-09**: Listar todas as organizações
-- **RF-10**: Visualizar detalhes de uma organização (incluindo endereço)
+### 2. Gerenciamento de Organizações
+- **RF004**: O sistema deve permitir o cadastro de organizações com nome e endereço
+- **RF005**: O sistema deve permitir a vinculação de endereços às organizações
+- **RF006**: O sistema deve permitir a listagem de todas as organizações cadastradas
 
-### 1.3 Gerenciamento de Endereços (RF-11 a RF-15)
-- **RF-11**: Cadastrar endereço (rua, cidade, estado, CEP, país)
-- **RF-12**: Editar endereço
-- **RF-13**: Excluir endereço
-- **RF-14**: Listar todos os endereços cadastrados
-- **RF-15**: Associar endereço a uma organização
+### 3. Gerenciamento de Projetos
+- **RF007**: O sistema deve permitir a criação de projetos com nome, descrição e datas de início/término
+- **RF008**: O sistema deve permitir a associação de projetos a organizações
+- **RF009**: O sistema deve permitir a busca de projetos por organização ou período
 
-### 1.4 Gerenciamento de Projetos (RF-16 a RF-20)
-- **RF-16**: Cadastrar projeto (nome, descrição, datas de início e término)
-- **RF-17**: Editar projeto (alterar nome, descrição ou datas)
-- **RF-18**: Excluir projeto
-- **RF-19**: Listar todos os projetos
-- **RF-20**: Visualizar detalhes de um projeto
+### 4. Gerenciamento de Tarefas
+- **RF010**: O sistema deve permitir a criação de tarefas com título, descrição e data de vencimento
+- **RF011**: O sistema deve permitir o status de conclusão das tarefas (concluído/pendente)
+- **RF012**: O sistema deve permitir a associação de tarefas a projetos específicos
 
-### 1.5 Gerenciamento de Funções (Roles) (RF-21 a RF-25)
-- **RF-21**: Cadastrar função (nome, descrição)
-- **RF-22**: Editar função
-- **RF-23**: Excluir função
-- **RF-24**: Listar todas as funções disponíveis
-- **RF-25**: Associar função a um usuário em um projeto
+### 5. Gerenciamento de Funções (Roles)
+- **RF013**: O sistema deve permitir a definição de funções (roles) com nome e descrição
+- **RF014**: O sistema deve permitir a atribuição de funções a usuários em projetos específicos
+- **RF015**: O sistema deve permitir a verificação de permissões baseadas em funções
 
-### 1.6 Associação de Usuários a Projetos (RF-26 a RF-28)
-- **RF-26**: Adicionar usuário a um projeto com uma função específica
-- **RF-27**: Remover usuário de um projeto
-- **RF-28**: Listar todos os usuários associados a um projeto, com suas respectivas funções
+### 6. Relacionamentos
+- **RF016**: O sistema deve permitir a associação de usuários a múltiplos projetos
+- **RF017**: O sistema deve permitir a associação de múltiplas tarefas a um projeto
+- **RF018**: O sistema deve permitir a consulta de todos os usuários de um projeto
 
-## 2. Requisitos Não-Funcionais (RNF)
+## Requisitos Não-Funcionais
 
-### 2.1 Desempenho (RNF-01 a RNF-03)
-- **RNF-01**: O sistema deve responder em até 2 segundos para operações básicas (cadastro, edição, exclusão)
-- **RNF-02**: Consultas de listagem devem carregar em até 3 segundos mesmo com grande volume de dados
-- **RNF-03**: O banco de dados SQLite deve ser otimizado para evitar lentidão em operações CRUD
+### 1. Desempenho
+- **RNF001**: O sistema deve responder a 95% das requisições em menos de 2 segundos em condições normais de uso
+- **RNF002**: O sistema deve suportar até 100 usuários concorrentes sem degradação significativa de performance
+- **RNF003**: As operações CRUD básicas devem ser concluídas em menos de 1 segundo
 
-### 2.2 Usabilidade (RNF-04 a RNF-06)
-- **RNF-04**: Interface gráfica intuitiva, seguindo padrões de design básicos do Java Swing
-- **RNF-05**: Mensagens de erro claras para o usuário em caso de falhas
-- **RNF-06**: Validação de campos obrigatórios antes de enviar formulários
+### 2. Usabilidade
+- **RNF004**: A interface deve seguir os princípios de design material e ser intuitiva para usuários com conhecimentos básicos de informática
+- **RNF005**: O sistema deve fornecer feedback visual imediato para todas as ações do usuário
+- **RNF006**: O tempo de aprendizado para uso das funcionalidades básicas não deve exceder 30 minutos
 
-### 2.3 Segurança (RNF-07 a RNF-09)
-- **RNF-07**: Dados sensíveis (como e-mails) devem ser validados antes do cadastro
-- **RNF-08**: Confirmação antes de exclusões irreversíveis (usuários, projetos, etc.)
-- **RNF-09**: O banco de dados SQLite deve ser armazenado localmente, sem exposição a redes públicas
+### 3. Segurança
+- **RNF007**: Todas as credenciais devem ser armazenadas de forma criptografada
+- **RNF008**: O sistema deve implementar controle de acesso baseado em funções (RBAC)
+- **RNF009**: Todas as comunicações cliente-servidor devem usar protocolos criptografados (HTTPS/TLS)
+- **RNF010**: O sistema deve prevenir ataques comuns (SQL Injection, XSS, CSRF)
 
-### 2.4 Compatibilidade (RNF-10 a RNF-11)
-- **RNF-10**: O sistema deve funcionar em Windows, Linux e macOS (desde que tenha JVM instalada)
-- **RNF-11**: Utilizar Java 8+ para garantir compatibilidade com a maioria dos ambientes
+### 4. Compatibilidade
+- **RNF011**: O sistema deve ser compatível com os principais navegadores (Chrome, Firefox, Edge, Safari) nas últimas 3 versões
+- **RNF012**: O backend deve ser capaz de operar em qualquer ambiente Java 11+
+- **RNF013**: O sistema deve ser responsivo e funcionar em dispositivos móveis com telas a partir de 5 polegadas
 
-### 2.5 Manutenibilidade (RNF-12 a RNF-14)
-- **RNF-12**: Código modularizado em DAO (Data Access Object) e UI (User Interface)
-- **RNF-13**: Documentação básica no código (comentários explicativos)
-- **RNF-14**: Facilidade para adicionar novas funcionalidades no futuro
+### 5. Manutenibilidade
+- **RNF014**: O código fonte deve seguir padrões de codificação consistentes e estar documentado
+- **RNF015**: O sistema deve ser modular, permitindo a substituição de componentes sem afetar o todo
+- **RNF016**: O tempo médio para corrigir defeitos críticos não deve exceder 24 horas após identificação
+- **RNF017**: O sistema deve fornecer logs detalhados para diagnóstico de problemas
+
+### 6. Outros Requisitos
+- **RNF018**: O sistema deve ter disponibilidade de 99,5% durante o horário comercial (8h-18h)
+- **RNF019**: O backup completo dos dados deve ser realizado diariamente
+- **RNF020**: O sistema deve suportar internacionalização para português e inglês
+
+## Observações:
+1. Prioridades podem ser atribuídas a cada requisito (alta, média, baixa)
+2. Requisitos podem ser detalhados em histórias de usuário ou casos de uso
+3. Métricas específicas podem ser definidas para cada RNF conforme necessidade do projeto
